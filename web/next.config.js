@@ -14,7 +14,7 @@ const withMDX = require('@next/mdx')({
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  basePath: process.env === 'development' ? '' : '/ai',
+  basePath: process.env.NODE_ENV === 'development' ? '' : '/ai',
   webpack: (config, { dev, isServer }) => {
     config.plugins.push(codeInspectorPlugin({ bundler: 'webpack' }))
     return config
