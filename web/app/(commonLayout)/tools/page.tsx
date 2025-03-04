@@ -12,15 +12,12 @@ const Layout: FC = () => {
   const { isCurrentWorkspaceDatasetOperator } = useAppContext()
 
   useEffect(() => {
-    if (typeof window !== 'undefined')
-      document.title = `${t('tools.title')} - Dify`
-    if (isCurrentWorkspaceDatasetOperator)
-      return router.replace('/datasets')
+    if (typeof window !== 'undefined') document.title = `${t('tools.title')} `
+    if (isCurrentWorkspaceDatasetOperator) return router.replace('/datasets')
   }, [isCurrentWorkspaceDatasetOperator, router, t])
 
   useEffect(() => {
-    if (isCurrentWorkspaceDatasetOperator)
-      return router.replace('/datasets')
+    if (isCurrentWorkspaceDatasetOperator) return router.replace('/datasets')
   }, [isCurrentWorkspaceDatasetOperator, router])
 
   return <ToolProviderList />

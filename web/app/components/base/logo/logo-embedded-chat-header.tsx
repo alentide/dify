@@ -1,7 +1,8 @@
 import type { FC } from 'react'
+import logo from '@/public/logo/logo-embedded-chat-header.png'
 
 type LogoEmbeddedChatHeaderProps = {
-  className?: string
+  className?: string;
 }
 
 const LogoEmbeddedChatHeader: FC<LogoEmbeddedChatHeaderProps> = ({
@@ -9,9 +10,9 @@ const LogoEmbeddedChatHeader: FC<LogoEmbeddedChatHeaderProps> = ({
 }) => {
   return (
     <img
-      src='/logo/logo-embedded-chat-header.png'
+      src={logo.src}
       className={`block w-auto h-6 ${className}`}
-      alt='logo'
+      alt="logo"
     />
   )
 }

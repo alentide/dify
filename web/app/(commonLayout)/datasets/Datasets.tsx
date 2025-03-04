@@ -6,7 +6,10 @@ import { debounce } from 'lodash-es'
 import { useTranslation } from 'react-i18next'
 import NewDatasetCard from './NewDatasetCard'
 import DatasetCard from './DatasetCard'
-import type { DataSetListResponse, FetchDatasetsParams } from '@/models/datasets'
+import type {
+  DataSetListResponse,
+  FetchDatasetsParams,
+} from '@/models/datasets'
 import { fetchDatasets } from '@/service/datasets'
 import { useAppContext } from '@/context/app-context'
 
@@ -26,31 +29,25 @@ const getKey = (
         include_all: includeAll,
       },
     }
-    if (tags.length)
-      params.params.tag_ids = tags
-    if (keyword)
-      params.params.keyword = keyword
+    if (tags.length) params.params.tag_ids = tags
+    if (keyword) params.params.keyword = keyword
     return params
   }
   return null
 }
 
 type Props = {
-  containerRef: React.RefObject<HTMLDivElement>
-  tags: string[]
-  keywords: string
-  includeAll: boolean
+  containerRef: React.RefObject<HTMLDivElement>;
+  tags: string[];
+  keywords: string;
+  includeAll: boolean;
 }
 
-const Datasets = ({
-  containerRef,
-  tags,
-  keywords,
-  includeAll,
-}: Props) => {
+const Datasets = ({ containerRef, tags, keywords, includeAll }: Props) => {
   const { isCurrentWorkspaceEditor } = useAppContext()
   const { data, isLoading, setSize, mutate } = useSWRInfinite(
-    (pageIndex: number, previousPageData: DataSetListResponse) => getKey(pageIndex, previousPageData, tags, keywords, includeAll),
+    (pageIndex: number, previousPageData: DataSetListResponse) =>
+      getKey(pageIndex, previousPageData, tags, keywords, includeAll),
     fetchDatasets,
     { revalidateFirstPage: false, revalidateAll: true },
   )
@@ -61,7 +58,7 @@ const Datasets = ({
 
   useEffect(() => {
     loadingStateRef.current = isLoading
-    document.title = `${t('dataset.knowledge')} - Dify`
+    document.title = `${t('dataset.knowledge')}`
   }, [isLoading])
 
   useEffect(() => {
@@ -79,11 +76,13 @@ const Datasets = ({
   }, [])
 
   return (
-    <nav className='grid content-start grid-cols-1 gap-4 px-12 pt-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grow shrink-0'>
-      { isCurrentWorkspaceEditor && <NewDatasetCard ref={anchorRef} /> }
-      {data?.map(({ data: datasets }) => datasets.map(dataset => (
-        <DatasetCard key={dataset.id} dataset={dataset} onSuccess={mutate} />),
-      ))}
+    <nav className="grid content-start grid-cols-1 gap-4 px-12 pt-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 grow shrink-0">
+      {isCurrentWorkspaceEditor && <NewDatasetCard ref={anchorRef} />}
+      {data?.map(({ data: datasets }) =>
+        datasets.map(dataset => (
+          <DatasetCard key={dataset.id} dataset={dataset} onSuccess={mutate} />
+        )),
+      )}
     </nav>
   )
 }
