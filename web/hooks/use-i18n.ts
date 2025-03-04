@@ -1,6 +1,9 @@
 import { useLanguage } from '@/app/components/header/account-setting/model-provider-page/hooks'
 
-export const renderI18nObject = (obj: Record<string, string>, language: string) => {
+export const renderI18nObject = (
+  obj: Record<string, string>,
+  language: string,
+) => {
   if (!obj) return ''
   if (obj?.[language]) return obj[language]
   if (obj?.en_US) return obj.en_US

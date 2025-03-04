@@ -1,9 +1,4 @@
-import {
-  useCallback,
-  useEffect,
-  useMemo,
-  useState,
-} from 'react'
+import { useCallback, useEffect, useMemo, useState } from 'react'
 import useSWR, { useSWRConfig } from 'swr'
 import { useContext } from 'use-context-selector'
 import type {
@@ -28,9 +23,7 @@ import {
   getPayUrl,
 } from '@/service/common'
 import { useProviderContext } from '@/context/provider-context'
-import {
-  useMarketplacePlugins,
-} from '@/app/components/plugins/marketplace/hooks'
+import { useMarketplacePlugins } from '@/app/components/plugins/marketplace/hooks'
 import type { Plugin } from '@/app/components/plugins/types'
 import { PluginType } from '@/app/components/plugins/types'
 import { getMarketplacePluginsByCollectionId } from '@/app/components/plugins/marketplace/utils'
@@ -40,23 +33,30 @@ import { UPDATE_MODEL_PROVIDER_CUSTOM_MODEL_LIST } from './provider-added-card'
 
 type UseDefaultModelAndModelList = (
   defaultModel: DefaultModelResponse | undefined,
-  modelList: Model[],
+  modelList: Model[]
 ) => [DefaultModel | undefined, (model: DefaultModel) => void]
 export const useSystemDefaultModelAndModelList: UseDefaultModelAndModelList = (
   defaultModel,
   modelList,
 ) => {
   const currentDefaultModel = useMemo(() => {
-    const currentProvider = modelList.find(provider => provider.provider === defaultModel?.provider.provider)
-    const currentModel = currentProvider?.models.find(model => model.model === defaultModel?.model)
-    const currentDefaultModel = currentProvider && currentModel && {
+    const currentProvider = modelList.find(
+      provider => provider.provider === defaultModel?.provider.provider,
+    )
+    const currentModel = currentProvider?.models.find(
+      model => model.model === defaultModel?.model,
+    )
+    const currentDefaultModel = currentProvider
+      && currentModel && {
       model: currentModel.model,
       provider: currentProvider.provider,
     }
 
     return currentDefaultModel
   }, [defaultModel, modelList])
-  const [defaultModelState, setDefaultModelState] = useState<DefaultModel | undefined>(currentDefaultModel)
+  const [defaultModelState, setDefaultModelState] = useState<
+    DefaultModel | undefined
+  >(currentDefaultModel)
   const handleDefaultModelChange = useCallback((model: DefaultModel) => {
     setDefaultModelState(model)
   }, [])
@@ -79,13 +79,15 @@ export const useProviderCredentialsAndLoadBalancing = (
   currentCustomConfigurationModelFixedFields?: CustomConfigurationModelFixedFields,
 ) => {
   const { data: predefinedFormSchemasValue, mutate: mutatePredefined } = useSWR(
-    (configurationMethod === ConfigurationMethodEnum.predefinedModel && configured)
+    configurationMethod === ConfigurationMethodEnum.predefinedModel
+      && configured
       ? `/workspaces/current/model-providers/${provider}/credentials`
       : null,
     fetchModelProviderCredentials,
   )
   const { data: customFormSchemasValue, mutate: mutateCustomized } = useSWR(
-    (configurationMethod === ConfigurationMethodEnum.customizableModel && currentCustomConfigurationModelFixedFields)
+    configurationMethod === ConfigurationMethodEnum.customizableModel
+      && currentCustomConfigurationModelFixedFields
       ? `/workspaces/current/model-providers/${provider}/models/credentials?model=${currentCustomConfigurationModelFixedFields?.__model_name}&model_type=${currentCustomConfigurationModelFixedFields?.__model_type}`
       : null,
     fetchModelProviderCredentials,
@@ -107,14 +109,18 @@ export const useProviderCredentialsAndLoadBalancing = (
     predefinedFormSchemasValue?.credentials,
   ])
 
-  const mutate = useMemo(() => () => {
-    mutatePredefined()
-    mutateCustomized()
-  }, [mutateCustomized, mutatePredefined])
+  const mutate = useMemo(
+    () => () => {
+      mutatePredefined()
+      mutateCustomized()
+    },
+    [mutateCustomized, mutatePredefined],
+  )
 
   return {
     credentials,
-    loadBalancing: (configurationMethod === ConfigurationMethodEnum.predefinedModel
+    loadBalancing: (configurationMethod
+    === ConfigurationMethodEnum.predefinedModel
       ? predefinedFormSchemasValue
       : customFormSchemasValue
     )?.load_balancing,
@@ -124,7 +130,10 @@ export const useProviderCredentialsAndLoadBalancing = (
 }
 
 export const useModelList = (type: ModelTypeEnum) => {
-  const { data, mutate, isLoading } = useSWR(`/workspaces/current/models/model-types/${type}`, fetchModelList)
+  const { data, mutate, isLoading } = useSWR(
+    `/workspaces/current/models/model-types/${type}`,
+    fetchModelList,
+  )
 
   return {
     data: data?.data || [],
@@ -134,7 +143,10 @@ export const useModelList = (type: ModelTypeEnum) => {
 }
 
 export const useDefaultModel = (type: ModelTypeEnum) => {
-  const { data, mutate, isLoading } = useSWR(`/workspaces/current/default-model?model_type=${type}`, fetchDefaultModal)
+  const { data, mutate, isLoading } = useSWR(
+    `/workspaces/current/default-model?model_type=${type}`,
+    fetchDefaultModal,
+  )
 
   return {
     data: data?.data,
@@ -143,9 +155,16 @@ export const useDefaultModel = (type: ModelTypeEnum) => {
   }
 }
 
-export const useCurrentProviderAndModel = (modelList: Model[], defaultModel?: DefaultModel) => {
-  const currentProvider = modelList.find(provider => provider.provider === defaultModel?.provider)
-  const currentModel = currentProvider?.models.find(model => model.model === defaultModel?.model)
+export const useCurrentProviderAndModel = (
+  modelList: Model[],
+  defaultModel?: DefaultModel,
+) => {
+  const currentProvider = modelList.find(
+    provider => provider.provider === defaultModel?.provider,
+  )
+  const currentModel = currentProvider?.models.find(
+    model => model.model === defaultModel?.model,
+  )
 
   return {
     currentProvider,
@@ -153,13 +172,17 @@ export const useCurrentProviderAndModel = (modelList: Model[], defaultModel?: De
   }
 }
 
-export const useTextGenerationCurrentProviderAndModelAndModelList = (defaultModel?: DefaultModel) => {
+export const useTextGenerationCurrentProviderAndModelAndModelList = (
+  defaultModel?: DefaultModel,
+) => {
   const { textGenerationModelList } = useProviderContext()
-  const activeTextGenerationModelList = textGenerationModelList.filter(model => model.status === ModelStatusEnum.active)
-  const {
-    currentProvider,
-    currentModel,
-  } = useCurrentProviderAndModel(textGenerationModelList, defaultModel)
+  const activeTextGenerationModelList = textGenerationModelList.filter(
+    model => model.status === ModelStatusEnum.active,
+  )
+  const { currentProvider, currentModel } = useCurrentProviderAndModel(
+    textGenerationModelList,
+    defaultModel,
+  )
 
   return {
     currentProvider,
@@ -179,11 +202,16 @@ export const useModelListAndDefaultModel = (type: ModelTypeEnum) => {
   }
 }
 
-export const useModelListAndDefaultModelAndCurrentProviderAndModel = (type: ModelTypeEnum) => {
+export const useModelListAndDefaultModelAndCurrentProviderAndModel = (
+  type: ModelTypeEnum,
+) => {
   const { modelList, defaultModel } = useModelListAndDefaultModel(type)
   const { currentProvider, currentModel } = useCurrentProviderAndModel(
     modelList,
-    { provider: defaultModel?.provider.provider || '', model: defaultModel?.model || '' },
+    {
+      provider: defaultModel?.provider.provider || '',
+      model: defaultModel?.model || '',
+    },
   )
 
   return {
@@ -197,9 +225,12 @@ export const useModelListAndDefaultModelAndCurrentProviderAndModel = (type: Mode
 export const useUpdateModelList = () => {
   const { mutate } = useSWRConfig()
 
-  const updateModelList = useCallback((type: ModelTypeEnum) => {
-    mutate(`/workspaces/current/models/model-types/${type}`)
-  }, [mutate])
+  const updateModelList = useCallback(
+    (type: ModelTypeEnum) => {
+      mutate(`/workspaces/current/models/model-types/${type}`)
+    },
+    [mutate],
+  )
 
   return updateModelList
 }
@@ -208,12 +239,13 @@ export const useAnthropicBuyQuota = () => {
   const [loading, setLoading] = useState(false)
 
   const handleGetPayUrl = async () => {
-    if (loading)
-      return
+    if (loading) return
 
     setLoading(true)
     try {
-      const res = await getPayUrl('/workspaces/current/model-providers/anthropic/checkout-url')
+      const res = await getPayUrl(
+        '/workspaces/current/model-providers/anthropic/checkout-url',
+      )
 
       window.location.href = res.url
     }
@@ -226,7 +258,11 @@ export const useAnthropicBuyQuota = () => {
 }
 
 export const useModelProviders = () => {
-  const { data: providersData, mutate, isLoading } = useSWR('/workspaces/current/model-providers', fetchModelProviders)
+  const {
+    data: providersData,
+    mutate,
+    isLoading,
+  } = useSWR('/workspaces/current/model-providers', fetchModelProviders)
 
   return {
     data: providersData?.data || [],
@@ -245,21 +281,24 @@ export const useUpdateModelProviders = () => {
   return updateModelProviders
 }
 
-export const useMarketplaceAllPlugins = (providers: ModelProvider[], searchText: string) => {
+export const useMarketplaceAllPlugins = (
+  providers: ModelProvider[],
+  searchText: string,
+) => {
   const exclude = useMemo(() => {
-    return providers.map(provider => provider.provider.replace(/(.+)\/([^/]+)$/, '$1'))
+    return providers.map(provider =>
+      provider.provider.replace(/(.+)\/([^/]+)$/, '$1'),
+    )
   }, [providers])
   const [collectionPlugins, setCollectionPlugins] = useState<Plugin[]>([])
 
-  const {
-    plugins,
-    queryPlugins,
-    queryPluginsWithDebounced,
-    isLoading,
-  } = useMarketplacePlugins()
+  const { plugins, queryPlugins, queryPluginsWithDebounced, isLoading }
+    = useMarketplacePlugins()
 
   const getCollectionPlugins = useCallback(async () => {
-    const collectionPlugins = await getMarketplacePluginsByCollectionId('__model-settings-pinned-models')
+    const collectionPlugins = await getMarketplacePluginsByCollectionId(
+      '__model-settings-pinned-models',
+    )
 
     setCollectionPlugins(collectionPlugins)
   }, [])
@@ -293,13 +332,20 @@ export const useMarketplaceAllPlugins = (providers: ModelProvider[], searchText:
   }, [queryPlugins, queryPluginsWithDebounced, searchText, exclude])
 
   const allPlugins = useMemo(() => {
-    const allPlugins = [...collectionPlugins.filter(plugin => !exclude.includes(plugin.plugin_id))]
+    const allPlugins = [
+      ...collectionPlugins.filter(
+        plugin => !exclude.includes(plugin.plugin_id),
+      ),
+    ]
 
     if (plugins?.length) {
       for (let i = 0; i < plugins.length; i++) {
         const plugin = plugins[i]
 
-        if (plugin.type !== 'bundle' && !allPlugins.find(p => p.plugin_id === plugin.plugin_id))
+        if (
+          plugin.type !== 'bundle'
+          && !allPlugins.find(p => p.plugin_id === plugin.plugin_id)
+        )
           allPlugins.push(plugin)
       }
     }
@@ -314,7 +360,9 @@ export const useMarketplaceAllPlugins = (providers: ModelProvider[], searchText:
 }
 
 export const useModelModalHandler = () => {
-  const setShowModelModal = useModalContextSelector(state => state.setShowModelModal)
+  const setShowModelModal = useModalContextSelector(
+    state => state.setShowModelModal,
+  )
   const updateModelProviders = useUpdateModelProviders()
   const updateModelList = useUpdateModelList()
   const { eventEmitter } = useEventEmitterContextContext()
@@ -328,7 +376,8 @@ export const useModelModalHandler = () => {
       payload: {
         currentProvider: provider,
         currentConfigurationMethod: configurationMethod,
-        currentCustomConfigurationModelFixedFields: CustomConfigurationModelFixedFields,
+        currentCustomConfigurationModelFixedFields:
+          CustomConfigurationModelFixedFields,
       },
       onSaveCallback: () => {
         updateModelProviders()
@@ -337,8 +386,11 @@ export const useModelModalHandler = () => {
           updateModelList(type)
         })
 
-        if (configurationMethod === ConfigurationMethodEnum.customizableModel
-            && provider.custom_configuration.status === CustomConfigurationStatusEnum.active) {
+        if (
+          configurationMethod === ConfigurationMethodEnum.customizableModel
+          && provider.custom_configuration.status
+            === CustomConfigurationStatusEnum.active
+        ) {
           eventEmitter?.emit({
             type: UPDATE_MODEL_PROVIDER_CUSTOM_MODEL_LIST,
             payload: provider.provider,
