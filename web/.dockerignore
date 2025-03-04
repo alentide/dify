@@ -1,5 +1,5 @@
-.env
-.env.*
+#.env
+#.env.*
 
 # Logs
 logs
@@ -8,7 +8,7 @@ logs
 # node
 node_modules
 .husky
-.next
+#.next
 
 # vscode
 .vscode
