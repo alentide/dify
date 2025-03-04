@@ -14,7 +14,7 @@ WORKDIR /app
 COPY ./.next/standalone/ ./
 
 # 复制环境配置文件
-COPY ./.env.local ./
+# COPY ./.env.local ./
 
 
 EXPOSE 3000
