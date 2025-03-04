@@ -8,6 +8,7 @@ import {
 } from '@/app/components/base/icons/src/public/llm'
 import cn from '@/utils/classnames'
 import { renderI18nObject } from '@/hooks/use-i18n'
+import { STATIC_API_PREFIX } from '@/config'
 
 type ModelIconProps = {
   provider?: Model | ModelProvider;
@@ -48,7 +49,10 @@ const ModelIcon: FC<ModelIconProps> = ({
       >
         <img
           alt="model-icon"
-          src={renderI18nObject(provider.icon_small, language)}
+          src={`${STATIC_API_PREFIX}${renderI18nObject(
+            provider.icon_small,
+            language,
+          )}`}
         />
       </div>
     )
